@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.5">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Test Plan" enabled="true">
+      <stringProp name="TestPlan.comments"></stringProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.tearDown_on_shutdown">true</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <collectionProp name="Arguments.arguments"/>
+      </elementProp>
+      <stringProp name="TestPlan.user_define_classpath"></stringProp>
+    </TestPlan>
+    <hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+      </ThreadGroup>
+      <hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET  Request" enabled="true">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="_limit" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">200</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+                <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                <stringProp name="Argument.name">_limit</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">jsonplaceholder.typicode.com</stringProp>
+          <stringProp name="HTTPSampler.port"></stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/todos</stringProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Verify Response Code" enabled="true">
+            <stringProp name="TestPlan.comments">Verifies the response code received from above GET request</stringProp>
+            <stringProp name="scriptLanguage">groovy</stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="script">// Get the response code from the previous sampler
+def responseCode = prev.getResponseCode()
+
+// Define the expected response code
+def expectedResponseCode = &quot;200&quot;
+
+// Verify if the actual response code matches the expected response code
+if (responseCode.equals(expectedResponseCode)) {
+    log.info(&quot;Response code verification passed. Actual response code: ${responseCode}&quot;)
+} else {
+    log.error(&quot;Response code verification failed. Expected: ${expectedResponseCode}, Actual: ${responseCode}&quot;)
+    
+}
+</stringProp>
+          </JSR223PostProcessor>
+          <hashTree/>
+          <ResultSaver guiclass="ResultSaverGui" testclass="ResultSaver" testname="Save Responses to a file" enabled="true">
+            <stringProp name="TestPlan.comments">Saves the GET request response received from the sampler</stringProp>
+            <stringProp name="FileSaver.filename"> GET_Response</stringProp>
+            <boolProp name="FileSaver.errorsonly">false</boolProp>
+            <boolProp name="FileSaver.successonly">false</boolProp>
+            <boolProp name="FileSaver.skipsuffix">false</boolProp>
+            <boolProp name="FileSaver.skipautonumber">true</boolProp>
+            <stringProp name="FileSaver.variablename">.json</stringProp>
+          </ResultSaver>
+          <hashTree/>
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Modify Content" enabled="true">
+            <stringProp name="TestPlan.comments">Contains groovy script to modify the content of the request file</stringProp>
+            <stringProp name="scriptLanguage">groovy</stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="script">// Import necessary libraries for JSON processing, file operations, and list handling
+import groovy.json.JsonSlurper
+import groovy.json.JsonOutput
+import java.io.File
+import java.util.List
+
+// Define the input and output file paths
+String inputFilePath = &quot;C:\\Users\\HP\\Downloads\\apache-jmeter-5.5\\apache-jmeter-5.5\\bin\\ GET_Response.json&quot;
+String outputFilePath = &quot;C:\\Users\\HP\\Downloads\\apache-jmeter-5.5\\apache-jmeter-5.5\\bin\\POST_Request.json&quot;
+
+try {
+    // Read the content of the input file
+    def content = new File(inputFilePath).text
+
+    // Parse the JSON content into a JSON array
+    def jsonSlurper = new JsonSlurper()
+    def jsonArray = jsonSlurper.parseText(content)
+
+    // Iterate through each JSON object in the array
+    for (def jsonObject : jsonArray) {
+        // Extract values from the JSON object
+        def userId = jsonObject.userId
+        def id = jsonObject.id
+        def completed = jsonObject.completed
+
+        // Check conditions for odd userId and even id
+        if (userId % 2 != 0 &amp;&amp; id % 2 == 0) {
+            // Interchange the value of the &quot;completed&quot; attribute
+            jsonObject.completed = !completed
+        }
+    }
+
+    // Convert the modified JSON array back to a string and save it to the output file
+    new File(outputFilePath).text = JsonOutput.toJson(jsonArray)
+
+    // Log a success message
+    log.info(&quot;Content of POST_Request.json modified and saved successfully.&quot;)
+} catch (Exception e) {
+    // Log an error message if an exception occurs
+    log.error(&quot;Error: &quot; + e.getMessage())
+}
+</stringProp>
+          </JSR223PostProcessor>
+          <hashTree/>
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Store the variable" enabled="true">
+            <stringProp name="TestPlan.comments">Stores the modified content in a variable</stringProp>
+            <stringProp name="scriptLanguage">groovy</stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="script">// Import the FileUtils class from Apache Commons IO library for file operations
+import org.apache.commons.io.FileUtils
+
+// Define the file path where the JSON data is stored
+String filePath = &quot;C:\\Users\\HP\\Downloads\\apache-jmeter-5.5\\apache-jmeter-5.5\\bin\\POST_Request.json&quot;
+
+// Define the variable name to store the JSON data
+String variableName = &quot;RequestData&quot;
+
+try {
+    // Read the content of the JSON file into a string using FileUtils
+    String content = FileUtils.readFileToString(new File(filePath), &quot;UTF-8&quot;)
+
+    // Store the content in a JMeter variable with the specified variable name
+    vars.put(variableName, content)
+
+    // Log a message indicating the successful storage of content in the variable
+    log.info(&quot;Content of POST_Request.json stored in variable &apos;{}&apos;.&quot;, variableName)
+} catch (Exception e) {
+    // Log an error message if an exception occurs during file reading or variable storage
+    log.error(&quot;Error: &quot; + e.getMessage())
+}
+</stringProp>
+          </JSR223PostProcessor>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST Request" enabled="true">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">${RequestData}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">jsonplaceholder.typicode.com</stringProp>
+          <stringProp name="HTTPSampler.port"></stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/todos</stringProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-type</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+            </collectionProp>
+            <stringProp name="TestPlan.comments">Set the key value pair which is included in HTTP Request</stringProp>
+          </HeaderManager>
+          <hashTree/>
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Verify the response code" enabled="true">
+            <stringProp name="TestPlan.comments">verifies whether response code is &quot;201&quot; </stringProp>
+            <stringProp name="scriptLanguage">groovy</stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="script">// Get the response code
+def responseCode = prev.getResponseCode()
+
+// Verify if the response code is 200
+if (responseCode.equals(&quot;201&quot;)) {
+    log.info(&quot;Response code is 201. Test passed!&quot;)
+} else {
+    log.error(&quot;Response code is not 201. Actual response code: ${responseCode}&quot;)
+    AssertionResult.setFailure(true)
+}</stringProp>
+          </JSR223PostProcessor>
+          <hashTree/>
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Store the response in variable" enabled="true">
+            <stringProp name="scriptLanguage">groovy</stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="script">// Get the response data
+def responseData = prev.getResponseDataAsString()
+
+// Check if the response data is not empty
+if (responseData) {
+    // Store the response data in a variable named &quot;responseVariable&quot;
+    vars.put(&quot;responseData&quot;, responseData)
+    log.info(&quot;Response data stored in responseVariable: responseData&quot;)
+} else {
+    log.warn(&quot;Response data is empty.&quot;)
+}</stringProp>
+          </JSR223PostProcessor>
+          <hashTree/>
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Verify the content" enabled="true">
+            <stringProp name="scriptLanguage">groovy</stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="script">import groovy.json.JsonSlurper
+
+def requestJson = vars.get(&quot;RequestData&quot;);
+def responseJson = vars.get(&quot;responseData&quot;);
+
+def requestList = new JsonSlurper().parseText(requestJson)
+def responseMap = new JsonSlurper().parseText(responseJson)
+
+def mismatchedKeys = []
+
+requestList.eachWithIndex { requestItem, index -&gt;
+    responseItem = responseMap[index.toString()]
+    if (responseItem) {
+        def keys = requestItem.keySet()
+        keys.each { key -&gt;
+            if (requestItem[key] != responseItem[key]) {
+                mismatchedKeys.add(&quot;Mismatch at index ${index}, key &apos;${key}&apos;: Request value &apos;${requestItem[key]}&apos; does not match response value &apos;${responseItem[key]}&apos;&quot;)
+            }
+        }
+    } else {
+        mismatchedKeys.add(&quot;Response does not contain item at index ${index}&quot;)
+    }
+}
+
+if (mismatchedKeys.isEmpty()) {
+    log.info(&quot;No mismatches found.&quot;)
+} else {
+    mismatchedKeys.each { mismatch -&gt;
+        log.error(mismatch)
+    }
+    AssertionResult.setFailureMessage(&quot;JSON mismatch found. See log for details.&quot;)
+    AssertionResult.setFailure(true)
+}</stringProp>
+          </JSR223PostProcessor>
+          <hashTree/>
+          <JSR223Assertion guiclass="TestBeanGUI" testclass="JSR223Assertion" testname="Verify  content" enabled="false">
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">// Get the expected content from the variable set in a previous request
+def expectedContent = vars.get(&quot;RequestData&quot;)
+
+// Get the actual response code and response data
+def responseCode = prev.getResponseCode()
+def responseData = prev.getResponseDataAsString()
+
+// Define the expected response code
+def expectedResponseCode = &quot;201&quot;
+
+// Validate the response code
+assert responseCode.equals(expectedResponseCode), &quot;Response code validation failed. Expected: ${expectedResponseCode}, Actual: ${responseCode}&quot;
+
+// Validate the response content
+// Note: This assertion will surely fail 
+assert responseData.contains(expectedContent), &quot;Response content validation failed. Expected content not found in the response.&quot;
+
+// Logging a message explaining the issue with response content
+log.error(&quot;Response content validation failed. Expected content: ${expectedContent}&quot;)
+log.info(&quot;The script assumes the expected content in the form of: [{userId: 1, id: 1, title: &apos;delectus aut autem&apos;, completed: false}]&quot;)
+log.info(&quot;But the actual response data appears to be in the form of: {userId: 1, id: 1, title: &apos;delectus aut autem&apos;, completed: false}&quot;)
+
+// You can log a success message if response code validation passes
+log.info(&quot;Response code validation passed. Response code: ${responseCode}&quot;)
+
+
+</stringProp>
+            <stringProp name="scriptLanguage">groovy</stringProp>
+          </JSR223Assertion>
+          <hashTree/>
+        </hashTree>
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+        <ResultCollector guiclass="TableVisualizer" testclass="ResultCollector" testname="View Results in Table" enabled="true">
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
+          <objProp>
+            <name>saveConfig</name>
+            <value class="SampleSaveConfiguration">
+              <time>true</time>
+              <latency>true</latency>
+              <timestamp>true</timestamp>
+              <success>true</success>
+              <label>true</label>
+              <code>true</code>
+              <message>true</message>
+              <threadName>true</threadName>
+              <dataType>true</dataType>
+              <encoding>false</encoding>
+              <assertions>true</assertions>
+              <subresults>true</subresults>
+              <responseData>false</responseData>
+              <samplerData>false</samplerData>
+              <xml>false</xml>
+              <fieldNames>true</fieldNames>
+              <responseHeaders>false</responseHeaders>
+              <requestHeaders>false</requestHeaders>
+              <responseDataOnError>false</responseDataOnError>
+              <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+              <assertionsResultsToSave>0</assertionsResultsToSave>
+              <bytes>true</bytes>
+              <sentBytes>true</sentBytes>
+              <url>true</url>
+              <threadCounts>true</threadCounts>
+              <idleTime>true</idleTime>
+              <connectTime>true</connectTime>
+            </value>
+          </objProp>
+          <stringProp name="filename"></stringProp>
+        </ResultCollector>
+        <hashTree/>
+      </hashTree>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>
