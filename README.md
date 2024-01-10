@@ -21,7 +21,7 @@ This project is designed for the automation and testing of APIs, with a primary 
      3. "save it" and run (Path should be changed as mentioned in Step 5)
      4. Results can be viewed in "View Results Tree" listener.
 9. **Runnung via Command Line**
-    1. Open Command Line and enter the command : jmeter -n -t path-existing-AutomateAPI.jmx -l path-to-generate-report.jtl and hti "ENTER"
+    1. Open Command Line and enter the command : jmeter -n -t path-existing-AutomateAPI.jmx -l path-to-generate-report.jtl and hit "ENTER"
     2. You can view the report .jtl in the specified path.
 
 
